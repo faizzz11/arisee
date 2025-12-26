@@ -1,0 +1,662 @@
+// GridBackground Component - Add this to your page.tsx
+function GridBackground() {
+  return (
+    <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:24px_24px]">
+      <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-full bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 blur-[100px]" />
+    </div>
+  );
+}
+
+// Sidebar Component - Add this to your page.tsx
+function Sidebar({ 
+  selectedLanguage, 
+  selectedLevel, 
+  onSelectLanguage, 
+  onSelectLevel,
+  isMobileMenuOpen,
+  onCloseMobileMenu
+}: { 
+  selectedLanguage: string;
+  selectedLevel: string;
+  onSelectLanguage: (language: string) => void;
+  onSelectLevel: (level: string) => void;
+  isMobileMenuOpen: boolean;
+  onCloseMobileMenu: () => void;
+}) {
+  const sidebarItems = [
+    { icon: <BookOpen className="w-5 h-5" />, label: "Labs", active: true },
+    { icon: <Layers className="w-5 h-5" />, label: "Learning Paths", active: false },
+    { icon: <Trophy className="w-5 h-5" />, label: "Achievements", active: false },
+    { icon: <Terminal className="w-5 h-5" />, label: "Playground", active: false },
+    { icon: <BarChart3 className="w-5 h-5" />, label: "Progress", active: false },
+  ];
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-gray-200 overflow-y-auto">
+        <div className="p-4 border-b">
+          <div className="flex items-center gap-2">
+            <Code2 className="w-6 h-6 text-indigo-600" />
+            <h2 className="font-bold text-xl text-gray-900">CodeLab</h2>
+          </div>
+        </div>
+        
+        <div className="p-4">
+          <h3 className="text-sm font-medium text-gray-500 mb-3">MENU</h3>
+          <ul className="space-y-1">
+            {sidebarItems.map((item, i) => (
+              <li key={i}>
+                <button 
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left ${
+                    item.active 
+                      ? "bg-indigo-50 text-indigo-700 font-medium" 
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                  {item.active && (
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600"></div>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <div className="p-4 mt-4">
+          <h3 className="text-sm font-medium text-gray-500 mb-3">FILTERS</h3>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm text-gray-600">Programming Language</label>
+              <Select value={selectedLanguage} onValueChange={onSelectLanguage}>
+                <SelectTrigger className="w-full text-sm">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                  {programmingLanguages.map(lang => (
+                    <SelectItem key={lang.id} value={lang.id}>
+                      <div className="flex items-center gap-2">
+                        <span>{lang.icon}</span>
+                        <span>{lang.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm text-gray-600">Skill Level</label>
+              <Select value={selectedLevel} onValueChange={onSelectLevel}>
+                <SelectTrigger className="w-full text-sm">
+                  <SelectValue placeholder="Select level" />
+                </SelectTrigger>
+                <SelectContent>
+                  {skillLevels.map(level => (
+                    <SelectItem key={level.id} value={level.id}>
+                      {level.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-auto p-4 border-t">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9">
+              <AvatarImage src="" />
+              <AvatarFallback className="bg-indigo-100 text-indigo-600">U</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-gray-900 truncate">User</p>
+              <p className="text-xs text-gray-500 truncate">student@example.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile Menu */}
+      <div className={`md:hidden fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 ${
+        isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}>
+        <div className={`bg-white w-64 h-full transition-transform duration-300 ${
+          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="p-4 border-b flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Code2 className="w-6 h-6 text-indigo-600" />
+              <h2 className="font-bold text-xl text-gray-900">CodeLab</h2>
+            </div>
+            <button onClick={onCloseMobileMenu}>
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+          
+          {/* Mobile menu content - same as desktop sidebar */}
+          <div className="p-4">
+            <h3 className="text-sm font-medium text-gray-500 mb-3">MENU</h3>
+            <ul className="space-y-1">
+              {sidebarItems.map((item, i) => (
+                <li key={i}>
+                  <button 
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left ${
+                      item.active 
+                        ? "bg-indigo-50 text-indigo-700 font-medium" 
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                    {item.active && (
+                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600"></div>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div className="p-4 mt-4">
+            <h3 className="text-sm font-medium text-gray-500 mb-3">FILTERS</h3>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Programming Language</label>
+                <Select value={selectedLanguage} onValueChange={onSelectLanguage}>
+                  <SelectTrigger className="w-full text-sm">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {programmingLanguages.map(lang => (
+                      <SelectItem key={lang.id} value={lang.id}>
+                        <div className="flex items-center gap-2">
+                          <span>{lang.icon}</span>
+                          <span>{lang.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Skill Level</label>
+                <Select value={selectedLevel} onValueChange={onSelectLevel}>
+                  <SelectTrigger className="w-full text-sm">
+                    <SelectValue placeholder="Select level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {skillLevels.map(level => (
+                      <SelectItem key={level.id} value={level.id}>
+                        {level.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// Updated ProblemsList Component - Replace your current ProblemsList with this
+function ProblemsList({ problems, topicTitle }: { problems: Problem[], topicTitle: string }) {
+  const [completedProblems, setCompletedProblems] = useState<number[]>([]);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const handleProblemComplete = (problemId: number) => {
+    if (!completedProblems.includes(problemId)) {
+      setCompletedProblems(prev => [...prev, problemId]);
+    }
+  };
+
+  useEffect(() => {
+    const progressValue = (completedProblems.length / problems.length) * 100;
+    setProgress(progressValue);
+    
+    if (completedProblems.length === problems.length && completedProblems.length > 0) {
+      setShowCelebration(true);
+      setTimeout(() => setShowCelebration(false), 5000);
+    }
+  }, [completedProblems, problems.length]);
+
+  return (
+    <div className="space-y-8">
+      {/* Progress tracking card */}
+      <Card className="bg-white">
+        <CardContent className="p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">{topicTitle} Progress</h3>
+              <p className="text-gray-600 text-sm">
+                {completedProblems.length} of {problems.length} problems solved
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Trophy className={`w-5 h-5 ${progress === 100 ? 'text-yellow-500' : 'text-gray-400'}`} />
+              <span className="font-medium text-lg">{Math.round(progress)}%</span>
+            </div>
+          </div>
+          <Progress value={progress} className="h-2" />
+        </CardContent>
+      </Card>
+      
+      {showCelebration && (
+        <>
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+            numberOfPieces={500}
+          />
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <Card className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl border-0">
+              <CardContent className="p-8 text-center">
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4">
+                    <Trophy className="w-10 h-10 text-yellow-500" />
+                  </div>
+                  <h2 className="text-3xl font-bold mb-2">
+                    🎉 Congratulations! 🎉
+                  </h2>
+                  <p className="text-indigo-100 max-w-md mx-auto mb-6">
+                    You've successfully completed all problems in this topic. 
+                    Your coding skills are improving!
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 w-full max-w-md">
+                    <div className="bg-white/20 p-3 rounded-lg">
+                      <div className="text-2xl font-bold">{problems.length}</div>
+                      <div className="text-xs text-indigo-100">Problems</div>
+                    </div>
+                    <div className="bg-white/20 p-3 rounded-lg">
+                      <div className="text-2xl font-bold">100%</div>
+                      <div className="text-xs text-indigo-100">Accuracy</div>
+                    </div>
+                    <div className="bg-white/20 p-3 rounded-lg">
+                      <div className="text-2xl font-bold">★★★</div>
+                      <div className="text-xs text-indigo-100">Rating</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </>
+      )}
+      
+      <div className="space-y-6">
+        {problems.map((problem, index) => (
+          <ProblemCard
+            key={problem.id}
+            problem={problem}
+            isCompleted={completedProblems.includes(problem.id)}
+            onComplete={() => handleProblemComplete(problem.id)}
+            number={index + 1}
+            totalProblems={problems.length}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Updated ProblemCard Component - Replace your current ProblemCard with this
+function ProblemCard({ problem, isCompleted, onComplete, number, totalProblems }: { 
+  problem: Problem; 
+  isCompleted: boolean; 
+  onComplete: () => void; 
+  number: number;
+  totalProblems: number;
+}) {
+  const [output, setOutput] = useState('');
+  const [isSolved, setIsSolved] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [codeExpanded, setCodeExpanded] = useState(false);
+
+  const handleRunCode = (output: string) => {
+    setOutput(output);
+    const expectedOutputs = problem.expectedOutputs;
+    const currentOutput = output.trim();
+    
+    if (expectedOutputs.includes(currentOutput)) {
+      setIsSolved(true);
+      if (!isCompleted) onComplete();
+    }
+  };
+
+  const hints = [
+    "Start by understanding the problem requirements carefully.",
+    "Break down the problem into smaller steps.",
+    "Consider edge cases in your solution.",
+    "Think about the time and space complexity of your algorithm."
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="relative"
+    >
+      <Card className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+        {/* Problem header with progress indicator */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100">
+          <div 
+            className="h-full bg-indigo-600 transition-all duration-500" 
+            style={{ width: `${(number / totalProblems) * 100}%` }}
+          />
+        </div>
+
+        <CardHeader className="pb-2">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-3 items-center">
+              <div className="bg-indigo-100 text-indigo-800 h-8 w-8 rounded-full flex items-center justify-center font-semibold">
+                {number}
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-gray-900">
+                  {problem.title}
+                </CardTitle>
+                <CardDescription className="mt-1 text-gray-600">{problem.description}</CardDescription>
+              </div>
+            </div>
+            {isSolved ? (
+              <div className="flex flex-col items-center">
+                <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
+                <span className="text-xs text-green-600 font-medium mt-1">Solved</span>
+              </div>
+            ) : (
+              <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
+                Challenge
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-medium text-indigo-800">Example:</h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-indigo-700 hover:text-indigo-900 hover:bg-indigo-100 p-1 h-auto"
+                onClick={() => setShowHint(!showHint)}
+              >
+                {showHint ? "Hide Hint" : "Show Hint"}
+              </Button>
+            </div>
+            <pre className="text-sm text-indigo-700 whitespace-pre-wrap bg-indigo-50 p-2 rounded">{problem.example}</pre>
+            
+            <AnimatePresence>
+              {showHint && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-3 bg-white p-3 rounded-lg border border-indigo-100">
+                    <h4 className="text-sm font-medium text-indigo-800 mb-2">Hints:</h4>
+                    <ul className="list-disc pl-5 text-xs text-indigo-700 space-y-1">
+                      {hints.map((hint, i) => (
+                        <li key={i}>{hint}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-medium text-gray-700">Your Solution:</h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-gray-600 hover:text-gray-900 p-1 h-auto"
+                onClick={() => setCodeExpanded(!codeExpanded)}
+              >
+                {codeExpanded ? "Collapse" : "Expand"}
+              </Button>
+            </div>
+            <div className={`transition-all duration-300 ${codeExpanded ? 'h-[400px]' : 'h-[200px]'}`}>
+              <CodeEditor initialCode={problem.starterCode} onOutput={handleRunCode} />
+            </div>
+          </div>
+
+          {output && (
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium text-gray-700">Output:</h3>
+                {isSolved && <Badge className="bg-green-500">Correct Answer</Badge>}
+              </div>
+              <pre className="mt-2 text-sm text-gray-600 p-2 bg-white rounded border border-gray-200">{output}</pre>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
+// Updated VideoSection Component - Replace your current VideoSection with this
+function VideoSection({ 
+  videoUrl, 
+  onStartPractice, 
+  practiceStarted, 
+  title, 
+  description,
+  language,
+  difficulty
+}: {
+  videoUrl: string;
+  onStartPractice: () => void;
+  practiceStarted: boolean;
+  title: string;
+  description: string;
+  language: string;
+  difficulty: string;
+}) {
+  return (
+    <div className="space-y-8">
+      <Card className="bg-white overflow-hidden">
+        <div className="grid md:grid-cols-2 gap-0">
+          <div className="relative aspect-video bg-black">
+            <iframe
+              className="absolute inset-0 w-full h-full"
+              src={videoUrl}
+              title={title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+          <div className="p-6 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
+                  {programmingLanguages.find(l => l.id === language)?.name}
+                </Badge>
+                <Badge variant={
+                  difficulty === "beginner" ? "outline" : 
+                  difficulty === "intermediate" ? "secondary" : "default"
+                }>
+                  {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                </Badge>
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+              <p className="text-gray-600">{description}</p>
+            </div>
+            
+            <div className="mt-6 space-y-4">
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-indigo-600" />
+                  <span>Comprehensive tutorial</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Code2 className="w-4 h-4 text-indigo-600" />
+                  <span>Interactive challenges</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-indigo-600" />
+                  <span>Hands-on practice</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-indigo-600" />
+                  <span>Track your progress</span>
+                </div>
+              </div>
+              
+              {!practiceStarted && (
+                <Button
+                  onClick={onStartPractice}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700"
+                >
+                  <Play className="w-4 h-4" />
+                  Start Practice Challenges
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// Main Page Component with Sidebar Layout - Replace your current Page component with this
+export default function Page() {
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [practiceStarted, setPracticeStarted] = useState(false);
+  const [userLanguage, setUserLanguage] = useState("javascript");
+  const [userLevel, setUserLevel] = useState("beginner");
+  const [setupComplete, setSetupComplete] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleTopicSelect = (topicId: number) => {
+    setSelectedTopic(topicId);
+    setPracticeStarted(false);
+  };
+
+  const handleStartPractice = () => {
+    setPracticeStarted(true);
+  };
+
+  const handleBack = () => {
+    if (selectedTopic) {
+      setSelectedTopic(null);
+      setPracticeStarted(false);
+    } else {
+      setSetupComplete(false);
+    }
+  };
+
+  const handleSetupComplete = (language: string, level: string) => {
+    setUserLanguage(language);
+    setUserLevel(level);
+    setSetupComplete(true);
+  };
+
+  const currentTopic = selectedTopic ? topics.find(t => t.id === selectedTopic) : null;
+
+  return (
+    <div className="min-h-screen bg-gray-50 relative">
+      <GridBackground />
+      
+      {setupComplete && (
+        <Sidebar 
+          selectedLanguage={userLanguage}
+          selectedLevel={userLevel}
+          onSelectLanguage={setUserLanguage}
+          onSelectLevel={setUserLevel}
+          isMobileMenuOpen={isMobileMenuOpen}
+          onCloseMobileMenu={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+      
+      <div className={`transition-all duration-300 ${setupComplete ? 'md:pl-64' : ''}`}>
+        {setupComplete && (
+          <div className="sticky top-0 z-10 bg-white border-b border-gray-200 md:hidden">
+            <div className="p-4 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Code2 className="w-5 h-5 text-indigo-600" />
+                <h2 className="font-bold text-lg text-gray-900">CodeLab</h2>
+              </div>
+              <button onClick={() => setIsMobileMenuOpen(true)}>
+                <Menu className="w-5 h-5 text-gray-600" />
+              </button>
+            </div>
+          </div>
+        )}
+      
+        <main className="container mx-auto px-4 py-8 space-y-8">
+          {!setupComplete ? (
+            <LanguageSelection onComplete={handleSetupComplete} />
+          ) : !selectedTopic ? (
+            <>
+              <div className="flex items-center gap-4 mb-4">
+                <button
+                  onClick={handleBack}
+                  className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  Back to Setup
+                </button>
+              </div>
+              <TopicRecommendation 
+                language={userLanguage} 
+                level={userLevel} 
+                onSelectTopic={handleTopicSelect} 
+              />
+            </>
+          ) : currentTopic ? (
+            <>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleBack}
+                  className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  Back to Topics
+                </button>
+              </div>
+              
+              <VideoSection
+                videoUrl={currentTopic.videoUrl}
+                onStartPractice={handleStartPractice}
+                practiceStarted={practiceStarted}
+                title={currentTopic.title}
+                description={currentTopic.description}
+                language={currentTopic.language}
+                difficulty={currentTopic.difficulty}
+              />
+              
+              {practiceStarted && (
+                <ProblemsList 
+                  problems={currentTopic.problems} 
+                  topicTitle={currentTopic.title}
+                />
+              )}
+            </>
+          ) : null}
+        </main>
+      </div>
+    </div>
+  );
+} 
